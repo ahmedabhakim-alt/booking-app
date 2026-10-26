@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Booking.com - Search</title>
+<style>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.search-box{background:white;padding:20px;border-radius:10px;margin-bottom:20px}
+input,button{padding:10px;margin:5px;border-radius:5px;border:1px solid #ccc}
+button{background:#003580;color:white;cursor:pointer;border:none}
+.card{background:white;padding:15px;margin:10px 0;border-radius:10px;display:flex;gap:15px}
+.card img{width:150px;height:100px;border-radius:5px;object-fit:cover}
+</style>
+</head>
+<body>
+<h2>🏨 Booking.com - ابحث عن فندق</h2>
+<div class="search-box">
+<input id="city" placeholder="المدينة: Cairo / Asyut">
+<input id="checkin" type="date">
+<input id="checkout" type="date">
+<input id="guests" type="number" placeholder="عدد الأفراد" min="1" max="10" value="2">
+<button onclick="search()">بحث</button>
+</div>
+<div id="results"></div>
+
+<script>
+const properties = [
+{id:1,title:"فندق النيل القاهرة",city:"Cairo",price:1200,rating:4.5,img:"https://picsum.photos/200/100?1"},
+{id:2,title:"فندق أسيوط بلازا",city:"Asyut",price:800,rating:4.2,img:"https://picsum.photos/200/100?2"},
+{id:3,title:"القاهرة هيلتون",city:"Cairo",price:2500,rating:4.8,img:"https://picsum.photos/200/100?3"},
+{id:4,title:"أسيوط جولدن",city:"Asyut",price:600,rating:4.0,img:"https://picsum.photos/200/100?4"},
+{id:5,title:"فندق الأهرامات",city:"Cairo",price:1800,rating:4.6,img:"https://picsum.photos/200/100?5"},
+{id:6,title:"النيل أسيوط",city:"Asyut",price:750,rating:4.1,img:"https://picsum.photos/200/100?6"},
+{id:7,title:"فندق التحرير",city:"Cairo",price:1000,rating:4.3,img:"https://picsum.photos/200/100?7"},
+{id:8,title:"أسيوط إن",city:"Asyut",price:550,rating:3.9,img:"https://picsum.photos/200/100?8"},
+{id:9,title:"فندق الزمالك",city:"Cairo",price:3000,rating:4.9,img:"https://picsum.photos/200/100?9"},
+{id:10,title:"فندق الجامعة أسيوط",city:"Asyut",price:650,rating:4.0,img:"https://picsum.photos/200/100?10"}
+];
+
+function show(list){
+ let html="";
+ list.forEach(p=>{
+   html+=`<div class="card"><img src="${p.img}"><div><h3>${p.title}</h3><p>${p.city} - ${p.price} جنيه / ليلة - ⭐ ${p.rating}</p><button onclick="goDetails(${p.id})">عرض التفاصيل</button></div></div>`;
+ });
+ document.getElementById("results").innerHTML=html;
+}
+function search(){
+ let city=document.getElementById("city").value.toLowerCase();
+ let filtered=properties;
+ if(city) filtered=filtered.filter(p=>p.city.toLowerCase().includes(city) || p.title.includes(city));
+ if(filtered.length==0) document.getElementById("results").innerHTML="<p>لا يوجد فنادق متاحة لهذه التواريخ - جرب تواريخ أخرى (A1 Alternative Path)</p>";
+ else show(filtered);
+}
+function goDetails(id){
+ let ci=document.getElementById("checkin").value;
+ let co=document.getElementById("checkout").value;
+ let g=document.getElementById("guests").value;
+ if(co && ci && co <= ci){ alert("Check-out must be after check-in (A2)"); return; }
+ localStorage.setItem("selectedId",id);
+ localStorage.setItem("checkin",ci);
+ localStorage.setItem("checkout",co);
+ localStorage.setItem("guests",g);
+ window.location="property.html";
+}
+show(properties);
+</script>
+</body>
+</html>

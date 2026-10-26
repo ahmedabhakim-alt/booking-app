@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تفاصيل الفندق</title>
+<style>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.box{background:white;padding:20px;border-radius:10px;max-width:600px;margin:auto}
+img{width:100%;height:250px;object-fit:cover;border-radius:10px}
+button{background:#003580;color:white;padding:12px 20px;border:none;border-radius:5px;cursor:pointer;width:100%;margin-top:10px;font-size:16px}
+.back{color:#003580;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="box">
+<p class="back" onclick="window.location='index.html'">← رجوع للبحث</p>
+<div id="details"></div>
+<h3>بيانات الحجز</h3>
+<input id="name" placeholder="اسمك الكامل" style="width:100%;padding:10px;margin:5px 0">
+<input id="email" placeholder="ايميلك" style="width:100%;padding:10px;margin:5px 0">
+<input id="phone" placeholder="رقم التليفون" style="width:100%;padding:10px;margin:5px 0">
+<p id="error" style="color:red"></p>
+<button onclick="book()">احجز الآن - Pay & Book</button>
+</div>
+<script>
+const properties=[
+{id:1,title:"فندق النيل القاهرة",city:"Cairo",price:1200,rating:4.5,img:"https://picsum.photos/200/100?1",desc:"فندق 5 نجوم على النيل مع إفطار مجاني"},
+{id:2,title:"فندق أسيوط بلازا",city:"Asyut",price:800,rating:4.2,img:"https://picsum.photos/200/100?2",desc:"في قلب أسيوط قريب من الجامعة"},
+{id:3,title:"القاهرة هيلتون",city:"Cairo",price:2500,rating:4.8,img:"https://picsum.photos/200/100?3",desc:"فاخر جدا مع حمام سباحة"},
+{id:4,title:"أسيوط جولدن",city:"Asyut",price:600,rating:4.0,img:"https://picsum.photos/200/100?4",desc:"اقتصادي ونظيف"},
+{id:5,title:"فندق الأهرامات",city:"Cairo",price:1800,rating:4.6,img:"https://picsum.photos/200/100?5",desc:"إطلالة على الأهرامات"},
+{id:6,title:"النيل أسيوط",city:"Asyut",price:750,rating:4.1,img:"https://picsum.photos/200/100?6",desc:"هادئ على الكورنيش"},
+{id:7,title:"فندق التحرير",city:"Cairo",price:1000,rating:4.3,img:"https://picsum.photos/200/100?7",desc:"وسط البلد"},
+{id:8,title:"أسيوط إن",city:"Asyut",price:550,rating:3.9,img:"https://picsum.photos/200/100?8",desc:"مناسب للطلاب"},
+{id:9,title:"فندق الزمالك",city:"Cairo",price:3000,rating:4.9,img:"https://picsum.photos/200/100?9",desc:"أفخم فندق في القاهرة"},
+{id:10,title:"فندق الجامعة أسيوط",city:"Asyut",price:650,rating:4.0,img:"https://picsum.photos/200/100?10",desc:"بجانب جامعة أسيوط"}
+];
+let id=localStorage.getItem("selectedId");
+let p=properties.find(x=>x.id==id);
+if(!p) p=properties[0];
+let ci=localStorage.getItem("checkin")||"2026-10-27";
+let co=localStorage.getItem("checkout")||"2026-10-28";
+let guests=localStorage.getItem("guests")||2;
+let nights=1;
+try{let d1=new Date(ci);let d2=new Date(co);nights=Math.max(1,Math.round((d2-d1)/(1000*60*60*24)));}catch(e){}
+let total=p.price*nights;
+document.getElementById("details").innerHTML=`<img src="${p.img}"><h2>${p.title}</h2><p>${p.city} - ⭐ ${p.rating}</p><p>${p.desc}</p><p><b>Check-in:</b> ${ci} | <b>Check-out:</b> ${co} | <b>Nights:</b> ${nights} | <b>Guests:</b> ${guests}</p><h3>السعر: ${p.price} x ${nights} = ${total} جنيه</h3><p>الحجز مجاني، الدفع عند الوصول</p>`;
+
+function book(){
+ let name=document.getElementById("name").value;
+ let email=document.getElementById("email").value;
+ let phone=document.getElementById("phone").value;
+ if(!name||!email){document.getElementById("error").innerText="من فضلك اكمل البيانات (A4 - Incomplete guest details)";return;}
+ if(!email.includes("@")){document.getElementById("error").innerText="الايميل غير صحيح";return;}
+ // Simulate API failure A6
+ if(Math.random()<0.1){document.getElementById("error").innerText="فشل الاتصال، حاول مرة أخرى (A6 - API Failure Simulation)";return;}
+ let bookingId="BK-"+Math.floor(10000+Math.random()*90000);
+ let booking={id:bookingId,hotel:p.title,checkin:ci,checkout:co,guests:guests,total:total,name:name};
+ localStorage.setItem("lastBooking",JSON.stringify(booking));
+ window.location="confirmation.html";
+}
+</script>
+</body>
+</html>
